@@ -1,14 +1,12 @@
 package co.edu.uniandes.matchengine.journaler.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table(name = "journal_ordenes")
+@Document(collection = "journal_ordenes")
 public class JournalEntity {
     @Id
-    private Long id;
+    private Long id; // Mongo usará el ID de la orden como su _id
     private Long productoId;
     private Integer cantidad;
     private Byte tipo;

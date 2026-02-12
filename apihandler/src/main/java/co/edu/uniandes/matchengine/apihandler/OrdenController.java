@@ -1,6 +1,6 @@
 package co.edu.uniandes.matchengine.apihandler;
 
-import co.edu.uniandes.matchengine.apihandler.dto.OrdenDTO;
+import co.edu.uniandes.matchengine.common.dto.OrdenDTO;
 import org.springframework.cloud.stream.function.StreamBridge; // IMPORTANTE: Faltaba este
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;

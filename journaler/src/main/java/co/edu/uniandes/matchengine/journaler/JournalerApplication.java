@@ -1,6 +1,6 @@
 package co.edu.uniandes.matchengine.journaler; // Identidad propia
 
-import co.edu.uniandes.matchengine.apihandler.dto.OrdenDTO;
+import co.edu.uniandes.matchengine.common.dto.OrdenDTO;
 import co.edu.uniandes.matchengine.journaler.repository.JournalRepository;
 import co.edu.uniandes.matchengine.journaler.model.JournalEntity;
 import org.springframework.boot.SpringApplication;
