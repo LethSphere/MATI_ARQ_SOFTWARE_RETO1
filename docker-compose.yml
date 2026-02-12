@@ -1,0 +1,16 @@
+services:
+  # Usamos Nginx: Es agnóstico a la versión de Docker y súper ligero
+  proxy:
+    image: nginx:alpine
+    container_name: nginx-balancer
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+
+  apihandler:
+    build: ./apihandler
+    image: apihandler-reto1:v1
+    container_name: api-handler-service
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
