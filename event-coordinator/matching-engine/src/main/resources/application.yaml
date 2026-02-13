@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: matching-engine
+
+  profiles:
+    active: dev
+
+server:
+  port: 8080
+
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
+
+    accept-count: 100
+    max-connections: 10000
+    connection-timeout: 20000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus,info,threaddump
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: always
+
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    com.uniandes.matching: DEBUG
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+workers:
+  notifications:
+    count: 10
+    queue-capacity: 1000
+
+  persistence:
+    sales:
+      count: 8
+      queue-capacity: 1000
+    buys:
+      count: 12
+      queue-capacity: 1000
