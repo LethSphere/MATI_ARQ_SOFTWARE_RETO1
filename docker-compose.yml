@@ -57,3 +57,20 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_DATA_MONGODB_URI=mongodb://db-journal:27017/trading_db
       #- SPRING_DATASOURCE_URL=jdbc:postgresql://db-journal:5432/trading_db
+
+  notificaciones:
+    build: ./notificaciones-go
+    container_name: notificador_mati
+    ports:
+      - "50051:50051"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'    # <-- Aquí es donde experimentas (Sube a 1.0, 2.0, etc.)
+          memory: 128M
+    networks:
+      - bolsa-net
+
+networks:
+  bolsa-net:
+    driver: bridge

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package notificaciones;
+option go_package = "./proto";
+
+service NotificadorService {
+  // Java llama a esto para pasar la orden con sus marcas de tiempo
+  rpc ProcesarNotificacion (MatchRequest) returns (NotificacionResponse);
+}
+
+message MatchRequest {
+  // Datos de Negocio
+  int64 id = 1;            // long en Java
+  int64 producto_id = 2;   // long en Java
+  int32 cantidad = 3;      // int en Java
+  int32 tipo = 4;          // byte en Java (se mapea a int32 en proto)
+
+  // Trazabilidad de Latencia (Nanosegundos para precisión LMAX)
+  int64 ts_api_recepcion = 5;
+  int64 ts_api_salida = 6;
+  int64 ts_rabbit_recepcion = 7;
+  int64 ts_engine_match = 8;
+  int64 ts_notificar_orden = 9;
+  int64 ts_notificar_match = 10;
+}
+
+message NotificacionResponse {
+  bool success = 1;
+}
