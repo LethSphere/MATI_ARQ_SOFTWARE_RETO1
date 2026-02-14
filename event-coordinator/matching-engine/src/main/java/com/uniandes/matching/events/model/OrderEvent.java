@@ -2,6 +2,8 @@ package com.uniandes.matching.events.model;
 
 import com.uniandes.matching.domain.model.Order;
 import lombok.*;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,14 +14,14 @@ public class OrderEvent {
 
     private EventType type;
     private Order order;
-    private LocalDateTime timestamp;
+    private Instant tiempo;
     private String errorMessage;
 
     public static OrderEvent of(EventType type, Order order) {
         return OrderEvent.builder()
                 .type(type)
                 .order(order)
-                .timestamp(LocalDateTime.now())
+                .tiempo(Instant.now())
                 .build();
     }
 
@@ -28,7 +30,7 @@ public class OrderEvent {
                 .type(type)
                 .order(order)
                 .errorMessage(errorMessage)
-                .timestamp(LocalDateTime.now())
+                .tiempo(Instant.now())
                 .build();
     }
 }

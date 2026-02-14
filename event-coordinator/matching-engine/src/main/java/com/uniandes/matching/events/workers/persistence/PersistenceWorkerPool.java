@@ -5,6 +5,7 @@ import com.uniandes.matching.domain.service.OrderService;
 import com.uniandes.matching.events.bus.EventBus;
 import com.uniandes.matching.events.model.EventType;
 import com.uniandes.matching.events.model.OrderEvent;
+import io.micrometer.core.instrument.Timer;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
@@ -43,11 +44,14 @@ public class PersistenceWorkerPool {
     private ExecutorService salesExecutor;
     private ExecutorService buysExecutor;
 
+    private final Timer ordenTimer;
+
     private final List<PersistenceWorker> workers = new ArrayList<>();
 
-    public PersistenceWorkerPool(EventBus eventBus, OrderService orderService) {
+    public PersistenceWorkerPool(EventBus eventBus, OrderService orderService, Timer ordenTimer) {
         this.eventBus = eventBus;
         this.orderService = orderService;
+        this.ordenTimer = ordenTimer;
     }
 
     @PostConstruct
@@ -63,7 +67,8 @@ public class PersistenceWorkerPool {
                     salesQueue,
                     orderService,
                     eventBus,
-                    "SalesPersistenceWorker-" + i
+                    "SalesPersistenceWorker-" + i,
+                    ordenTimer
             );
             workers.add(worker);
             salesExecutor.execute(worker);
@@ -74,7 +79,8 @@ public class PersistenceWorkerPool {
                     buysQueue,
                     orderService,
                     eventBus,
-                    "BuysPersistenceWorker-" + i
+                    "BuysPersistenceWorker-" + i,
+                    ordenTimer
             );
             workers.add(worker);
             buysExecutor.execute(worker);
