@@ -12,10 +12,10 @@ import (
 )
 
 type server struct {
-	pb.UnimplementedNotificadorServiceServer
+	pb.UnimplementedNotificadorServer
 }
 
-func (s *server) ProcesarNotificacion(ctx context.Context, in *pb.MatchRequest) (*pb.NotificacionResponse, error) {
+func (s *server) EnviarNotificacion(ctx context.Context, in *pb.MatchRequest) (*pb.NotificacionResponse, error) {
 
 	// CAPA DE NOTIFICACIÓN: Aquí aplicas la Goroutine para no frenar a Java
 	go func(data *pb.MatchRequest) {
@@ -33,7 +33,7 @@ func (s *server) ProcesarNotificacion(ctx context.Context, in *pb.MatchRequest) 
 func main() {
 	lis, _ := net.Listen("tcp", ":50051")
 	s := grpc.NewServer()
-	pb.RegisterNotificadorServiceServer(s, &server{})
+	pb.RegisterNotificadorServer(s, &server{})
 	log.Println("Servidor de Notificaciones Go escuchando en :50051")
 	s.Serve(lis)
 }

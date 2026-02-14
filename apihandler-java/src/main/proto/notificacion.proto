@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package co.edu.uniandes.notificador;
+
+option java_multiple_files = true;            // IMPORTANTE: Genera clases individuales
+option java_package = "co.edu.uniandes.notificador"; // IMPORTANTE: Define el paquete Java
+
+service Notificador {
+  rpc EnviarNotificacion (MatchRequest) returns (NotificacionResponse);
+}
+
+message MatchRequest {
+  int64 ordenId = 1;
+  int64 productoId = 2;
+  int32 cantidad = 3;
+  int32 tipo = 4; // 1=Compra, 2=Venta
+  // Campos de trazabilidad requeridos por el cliente Java
+  int64 ts_engine_match = 5;
+  int64 ts_api_recepcion = 6;
+}
+
+message NotificacionResponse {
+  string mensaje = 1;
+  bool exito = 2;
+}

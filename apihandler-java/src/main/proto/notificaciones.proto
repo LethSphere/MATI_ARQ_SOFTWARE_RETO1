@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package co.edu.uniandes.notificador; 
-option go_package = "./proto";
+package notificaciones;
+option java_package = "co.edu.uniandes.notificador";
 
-service Notificador {
-  // Asegúrate que el nombre del RPC también sea idéntico
-  rpc EnviarNotificacion (MatchRequest) returns (NotificacionResponse);
+service NotificadorService {
+  // Java llama a esto para pasar la orden con sus marcas de tiempo
+  rpc ProcesarNotificacion (MatchRequest) returns (NotificacionResponse);
 }
 
 message MatchRequest {
