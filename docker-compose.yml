@@ -84,6 +84,18 @@ services:
     depends_on:
       - notificaciones  # Para que Go suba primero
 
+  matching-engine:
+    build:
+      context: ./event-coordinator/matching-engine
+      dockerfile: Dockerfile
+    container_name: matching-engine
+    ports:
+      - "8081:8080"
+    networks:
+      - bolsa-net
+    depends_on:
+      - notificaciones 
+
 networks:
   bolsa-net:
     driver: bridge
