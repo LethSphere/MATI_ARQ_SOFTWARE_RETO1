@@ -91,11 +91,33 @@ services:
     container_name: matching-engine
     ports:
       - "8081:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/matching_engine_db
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
     networks:
       - bolsa-net
     depends_on:
       - notificaciones 
+      - postgres
+
+  postgres:
+    image: 'postgres:latest'
+    restart: unless-stopped
+    environment:
+      - 'POSTGRES_DB=matching_engine_db'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+    networks:
+      - bolsa-net
 
 networks:
   bolsa-net:
     driver: bridge
+
+volumes:
+  pgdata:
