@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    restart: unless-stopped
+    environment:
+      - 'POSTGRES_DB=matching_engine_db'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+
+volumes:
+  pgdata:
