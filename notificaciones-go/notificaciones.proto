@@ -1,27 +1,21 @@
 syntax = "proto3";
 
-package co.edu.uniandes.notificador; 
+// Eliminamos el paquete para que el servicio se llame "Notificador" a secas (igual que en Java)
 option go_package = "./proto";
 
 service Notificador {
-  // Asegúrate que el nombre del RPC también sea idéntico
   rpc EnviarNotificacion (MatchRequest) returns (NotificacionResponse);
 }
 
+// Alineado con la definición de Java (Métricas)
 message MatchRequest {
-  // Datos de Negocio
-  int64 orden_id = 1;      // Renombrado para coincidir semánticamente con Java (ordenId)
-  int64 producto_id = 2;   // long en Java
-  int32 cantidad = 3;      // int en Java
-  int32 tipo = 4;          // byte en Java (se mapea a int32 en proto)
-
-  // Trazabilidad de Latencia (Nanosegundos para precisión LMAX)
-  int64 ts_engine_match = 5; // Alineado con Java (campo 5)
-  int64 ts_api_salida = 6;
-  int64 ts_api_recepcion = 7; // Alineado con Java (campo 7)
+  int64 orden_id = 1;
+  int64 ts_engine_match = 2;
+  int64 ts_api_salida = 3;
+  int64 ts_api_recepcion = 4;
 }
 
 message NotificacionResponse {
-  string mensaje = 1; // Alineado con Java
-  bool exito = 2;     // Alineado con Java
+  bool exito = 1;     // Corregido: Java espera bool en 1
+  string mensaje = 2; // Corregido: Java espera string en 2
 }

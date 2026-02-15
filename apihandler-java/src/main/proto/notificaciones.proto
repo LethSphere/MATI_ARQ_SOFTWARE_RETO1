@@ -1,9 +1,8 @@
 syntax = "proto3";
 
-package notificaciones;
 option java_package = "co.edu.uniandes.notificador";
 
-service NotificadorService {
+service Notificador {
   // Java llama a esto para pasar la orden con sus marcas de tiempo
   rpc ProcesarNotificacion (MatchRequest) returns (NotificacionResponse);
 }

@@ -71,18 +71,18 @@ services:
     networks:
       - bolsa-net
 
-  apihandler-java:
-    build: ./apihandler-java
-    container_name: apihandler-java
-    ports:
-      - "8080:8080"
-    environment:
-      - GRPC_NOTIFICADOR_HOST=notificaciones
-      - GRPC_NOTIFICADOR_PORT=50051
-    networks:
-      - bolsa-net
-    depends_on:
-      - notificaciones  # Para que Go suba primero
+  # apihandler-java:
+  #   build: ./apihandler-java
+  #   container_name: apihandler-java
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - GRPC_NOTIFICADOR_HOST=notificaciones
+  #     - GRPC_NOTIFICADOR_PORT=50051
+  #   networks:
+  #     - bolsa-net
+  #   depends_on:
+  #     - notificaciones  # Para que Go suba primero
 
   matching-engine:
     build:
@@ -95,6 +95,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/matching_engine_db
       - SPRING_DATASOURCE_USERNAME=myuser
       - SPRING_DATASOURCE_PASSWORD=secret
+      - 'grpc.client.notificaciones.address=static://notificaciones:50051'
+      - 'grpc.client.notificaciones.negotiationType=PLAINTEXT'
     networks:
       - bolsa-net
     depends_on:

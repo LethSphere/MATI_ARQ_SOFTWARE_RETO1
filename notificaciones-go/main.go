@@ -9,6 +9,7 @@ import (
 	pb "notificaciones-go/proto" // El código que genere el proto
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type server struct {
@@ -34,6 +35,8 @@ func main() {
 	s := grpc.NewServer()
 	// 3. Conecta tu código con el servidor gRPC
 	pb.RegisterNotificadorServer(s, &server{})
+	// Habilitar reflection para depuración (grpcurl)
+	reflection.Register(s)
 	// 4. confirmar que todo va bien
 	log.Println("Servidor de Notificaciones Go escuchando en :50051")
 	// 5. Empieza a trabajar de verdad
