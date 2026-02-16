@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 public class OrderService {
     private final SaleOrderRepository saleOrderRepository;
     private final BuyOrderRepository buyOrderRepository;
-    private final NotificationService notificationService; // <--- 1. Inyectamos el servicio de notificación
+    private final NotificationService notificationService;
 
     public OrderService(SaleOrderRepository saleOrderRepository,
                         BuyOrderRepository buyOrderRepository,
@@ -26,13 +26,13 @@ public class OrderService {
     public Order createOrder(Order order) {
         order.initialize();
 
-        // ⚠️ SOLO PARA TESTING - Simula BD lenta
+        // SOLO PARA TESTING - Simula BD lenta
 //        try {
 //            Thread.sleep(200); // 200ms delay
 //        } catch (InterruptedException e) {
 //            Thread.currentThread().interrupt();
 //        }
-        // ⚠️ FIN TESTING
+        // FIN TESTING
 
         log.info("Creating order: {} - Type: {} - Symbol: {}", order.getId(), order.getType(), order.getSymbol());
 
@@ -43,14 +43,8 @@ public class OrderService {
             savedOrder = buyOrderRepository.save(order);
         }
 
-        // ⚠️ TRAMPA PARA PROBAR LA CONEXIÓN A GO ⚠️
-        // Como no hay motor de emparejamiento real aún, creamos un Match ficticio
-        // apenas llega la orden, solo para ver si el mensaje llega a Go.
-        Match fakeMatch = Match.create(savedOrder, savedOrder, 10); 
-        // (Usamos la misma orden dos veces solo para llenar los datos)
-        
+        Match fakeMatch = Match.create(savedOrder, savedOrder, 10);
         notificationService.sendMatchNotification(fakeMatch);
-        // ⚠️ FIN TRAMPA ⚠️
 
         return savedOrder;
     }

@@ -31,8 +31,7 @@ public class NotificationService {
     public void sendMatchNotification(Match match) {
         try {
             log.info("Enviando notificación de match vía gRPC: {}", match.getId());
-            
-            // Generamos timestamp compatible con Go (UnixNano)
+
             Instant now = Instant.now();
             long timestampNs = now.getEpochSecond() * 1_000_000_000L + now.getNano();
 

@@ -1,8 +1,9 @@
-package com.uniandes.matching.controller;
+package com.uniandes.matching.web.controller;
 
 import com.uniandes.matching.domain.model.Order;
-import com.uniandes.matching.domain.model.OrderType;
+import com.uniandes.matching.domain.service.NotificationService;
 import com.uniandes.matching.domain.service.OrderService;
+import com.uniandes.matching.web.dto.OrderRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,13 +14,18 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ordenes")
+@RequestMapping("/api/v1/matching")
 public class MatchingController {
 
     private final OrderService orderService;
+    private final NotificationService notificationService;
 
-    public MatchingController(OrderService orderService) {
+    public MatchingController(
+            OrderService orderService,
+            NotificationService notificationService
+    ) {
         this.orderService = orderService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping
@@ -31,7 +37,7 @@ public class MatchingController {
             order.setSymbol(request.getSymbol());
             order.setQuantity(request.getQuantity());
             order.setPrice(request.getPrice());
-            order.setType(OrderType.valueOf(request.getType())); // BUY o SALE
+            order.setType(request.getType()); // BUY o SALE
             order.setUserId(request.getUserId());
             order.setTimestamp(LocalDateTime.now());
 
