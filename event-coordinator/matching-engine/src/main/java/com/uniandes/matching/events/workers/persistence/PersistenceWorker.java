@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class PersistenceWorker implements Runnable {
@@ -43,19 +44,20 @@ public class PersistenceWorker implements Runnable {
 
                 log.debug("{} processing order: {}", workerName, event.getOrder().getId());
 
-                long startTime = System.currentTimeMillis();
+                Instant startTime = event.getTiempo();
 
                 orderService.createOrder(event.getOrder());
 
-                Instant end = Instant.now();
-                Duration duration = Duration.between(event.getTiempo(), Instant.now());
-                // Registrar en Micrometer
-                ordenTimer.record(duration);
+                //Calcula la duración TOTAL (desde Controller hasta DB)
+                Duration totalDuration = Duration.between(startTime, Instant.now());
 
-                long elapsed = System.currentTimeMillis() - startTime;
+                //Registra en Micrometer
+                ordenTimer.record(totalDuration.toMillis(), TimeUnit.MILLISECONDS);
 
-                log.debug("{} persisted order {} in {}ms",
-                        workerName, event.getOrder().getId(), elapsed);
+                log.debug("{} persisted order {} - Total time: {}ms",
+                        workerName,
+                        event.getOrder().getId(),
+                        totalDuration.toMillis());
 
                 eventBus.publish(OrderEvent.of(EventType.ORDER_PERSISTED, event.getOrder()));
 
