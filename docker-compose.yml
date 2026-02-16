@@ -71,19 +71,55 @@ services:
     networks:
       - bolsa-net
 
-  apihandler-java:
-    build: ./apihandler-java
-    container_name: apihandler-java
+  # apihandler-java:
+  #   build: ./apihandler-java
+  #   container_name: apihandler-java
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - GRPC_NOTIFICADOR_HOST=notificaciones
+  #     - GRPC_NOTIFICADOR_PORT=50051
+  #   networks:
+  #     - bolsa-net
+  #   depends_on:
+  #     - notificaciones  # Para que Go suba primero
+
+  matching-engine:
+    build:
+      context: ./event-coordinator/matching-engine
+      dockerfile: Dockerfile
+    container_name: matching-engine
     ports:
-      - "8080:8080"
+      - "8081:8080"
     environment:
-      - GRPC_NOTIFICADOR_HOST=notificaciones
-      - GRPC_NOTIFICADOR_PORT=50051
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/matching_engine_db
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - 'grpc.client.notificaciones.address=static://notificaciones:50051'
+      - 'grpc.client.notificaciones.negotiationType=PLAINTEXT'
     networks:
       - bolsa-net
     depends_on:
-      - notificaciones  # Para que Go suba primero
+      - notificaciones 
+      - postgres
+
+  postgres:
+    image: 'postgres:latest'
+    restart: unless-stopped
+    environment:
+      - 'POSTGRES_DB=matching_engine_db'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/data/postgres
+    networks:
+      - bolsa-net
 
 networks:
   bolsa-net:
     driver: bridge
+
+volumes:
+  pgdata:

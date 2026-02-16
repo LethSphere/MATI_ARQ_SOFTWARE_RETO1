@@ -1,19 +1,21 @@
 config:
-  target: "http://localhost:666"
+  target: "http://matching-engine:8080"
   phases:
+    - duration: 30
+      arrivalRate: 5
+      name: "Fase de Calentamiento (5 req/seg)"
     - duration: 60
-      arrivalCount: 1
-  processor: "./processor.js"
-
+      arrivalRate: 20
+      name: "Fase de Carga (20 req/seg)"
 scenarios:
-  - name: "Reto 1"
-    flow:
-      - function: "initPoisson"
-      - loop:
-          - function: "configurarOleada"
-          - post:
-              url: "/ordenes"
-              json:
-                tipo: "{{ tipo }}"
-                cantidad: "{{ cantidad }}"
-                usuario: "{{ usuario }}"
+  - flow:
+      - post:
+          url: "/ordenes"
+          headers:
+            Content-Type: "application/json"
+          json:
+            symbol: "AAPL"
+            quantity: "{{ $randomNumber(1, 100) }}"
+            price: 150
+            type: "BUY"
+            userId: "user{{ $randomNumber(1, 1000) }}"

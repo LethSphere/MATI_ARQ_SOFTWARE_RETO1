@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.uniandes.matching.grpc";
+
+service Notificador {
+  rpc EnviarNotificacion (MatchRequest) returns (NotificacionResponse);
+}
+
+// Ajustado para coincidir con lo que espera notificaciones-go (Métricas)
+message MatchRequest {
+  int64 ordenId = 1;       // Go espera un ID numérico
+  int64 tsEngineMatch = 2; // Timestamp del match (nanosegundos)
+  int64 tsApiSalida = 3;   // Timestamp de salida (nanosegundos)
+  int64 tsApiRecepcion = 4;// Lo llena el servidor Go
+}
+
+message NotificacionResponse {
+  bool exito = 1;
+  string mensaje = 2;
+}
