@@ -5,9 +5,13 @@ import com.uniandes.matching.domain.service.OrderService;
 import com.uniandes.matching.events.bus.EventBus;
 import com.uniandes.matching.events.model.EventType;
 import com.uniandes.matching.events.model.OrderEvent;
+import io.micrometer.core.instrument.Timer;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class PersistenceWorker implements Runnable {
@@ -16,15 +20,18 @@ public class PersistenceWorker implements Runnable {
     private final OrderService orderService;
     private final EventBus eventBus;
     private final String workerName;
+    private final Timer ordenTimer;
 
     public PersistenceWorker(BlockingQueue<OrderEvent> queue,
                              OrderService orderService,
                              EventBus eventBus,
-                             String workerName) {
+                             String workerName,
+                             Timer ordenTimer) {
         this.queue = queue;
         this.orderService = orderService;
         this.eventBus = eventBus;
         this.workerName = workerName;
+        this.ordenTimer = ordenTimer;
     }
 
     @Override
@@ -37,14 +44,20 @@ public class PersistenceWorker implements Runnable {
 
                 log.debug("{} processing order: {}", workerName, event.getOrder().getId());
 
-                long startTime = System.currentTimeMillis();
+                Instant startTime = event.getTiempo();
 
                 orderService.createOrder(event.getOrder());
 
-                long elapsed = System.currentTimeMillis() - startTime;
+                //Calcula la duración TOTAL (desde Controller hasta DB)
+                Duration totalDuration = Duration.between(startTime, Instant.now());
 
-                log.debug("{} persisted order {} in {}ms",
-                        workerName, event.getOrder().getId(), elapsed);
+                //Registra en Micrometer
+                ordenTimer.record(totalDuration.toMillis(), TimeUnit.MILLISECONDS);
+
+                log.debug("{} persisted order {} - Total time: {}ms",
+                        workerName,
+                        event.getOrder().getId(),
+                        totalDuration.toMillis());
 
                 eventBus.publish(OrderEvent.of(EventType.ORDER_PERSISTED, event.getOrder()));
 

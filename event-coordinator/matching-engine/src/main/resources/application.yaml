@@ -21,17 +21,26 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,metrics,prometheus,info,threaddump
-      base-path: /actuator
+        include: "*"
 
   endpoint:
     health:
       show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
 
   metrics:
     export:
       prometheus:
         enabled: true
+
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true  # Solo para métricas HTTP automáticas
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
 
 logging:
   level:
@@ -48,7 +57,7 @@ workers:
 
   persistence:
     sales:
-      count: 8
+      count: 20
       queue-capacity: 1000
     buys:
       count: 12

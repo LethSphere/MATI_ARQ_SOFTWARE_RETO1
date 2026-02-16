@@ -8,8 +8,8 @@ spring:
     # Configuración HikariCP
     hikari:
       # Pool size
-      maximum-pool-size: 10        # 20 workers + 5 buffer
-      minimum-idle: 4             # Mínimo de conexiones idle
+      maximum-pool-size: 30        # 20 workers + 5 buffer
+      minimum-idle: 10             # Mínimo de conexiones idle
 
       # Timeouts
       connection-timeout: 20000    # 20s para obtener conexión
